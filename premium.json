@@ -1,22 +1,32 @@
 [
   {
-    "name": "WIF2",
-    "price": 0.00243,
-    "volume": 185000,
-    "mc": 965000,
-    "txns": 104,
+    "name": "Kimbo",
+    "price": 0.0000245,
+    "volume": 245000,
+    "mc": 610000,
+    "txns": 187,
     "isUp": true,
-    "dexscreener": "https://dexscreener.com/solana/abc123exampletoken1",
-    "rugcheck": "https://rugcheck.xyz/tokens/abc123exampletoken1"
+    "dexscreener": "https://dexscreener.com/solana/6AHq47XeXXH1sLuvBUHiCrV9J1HgMRE6i3bCEj9fPE8E",
+    "rugcheck": "https://rugcheck.xyz/tokens/6AHq47XeXXH1sLuvBUHiCrV9J1HgMRE6i3bCEj9fPE8E"
   },
   {
-    "name": "SOLFROG",
-    "price": 0.00071,
-    "volume": 222000,
-    "mc": 780000,
-    "txns": 137,
+    "name": "MeowFi",
+    "price": 0.001024,
+    "volume": 302000,
+    "mc": 870000,
+    "txns": 226,
+    "isUp": true,
+    "dexscreener": "https://dexscreener.com/solana/7x1b8A8bqqiW45pJ6pmvUqZMP2aEnPGFszcvuh2ucncc",
+    "rugcheck": "https://rugcheck.xyz/tokens/7x1b8A8bqqiW45pJ6pmvUqZMP2aEnPGFszcvuh2ucncc"
+  },
+  {
+    "name": "GigaWif",
+    "price": 0.000086,
+    "volume": 178000,
+    "mc": 450000,
+    "txns": 143,
     "isUp": false,
-    "dexscreener": "https://dexscreener.com/solana/abc123exampletoken2",
-    "rugcheck": "https://rugcheck.xyz/tokens/abc123exampletoken2"
+    "dexscreener": "https://dexscreener.com/solana/9vLzXxg9c3xYsdUkLfwNZBcKKCuMAqGLq5NHytCm9XcX",
+    "rugcheck": "https://rugcheck.xyz/tokens/9vLzXxg9c3xYsdUkLfwNZBcKKCuMAqGLq5NHytCm9XcX"
   }
 ]
