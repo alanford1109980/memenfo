@@ -6,6 +6,85 @@
   <title>Memenfo – Premium Memecoin Picks</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script>
+function showPremium() {
+  const premiumGrid = document.getElementById("premium-grid");
+  premiumGrid.innerHTML = '<p style="color:#aaa;">Loading premium tokens...</p>';
+  premiumGrid.style.display = "grid";
+  fetchPremiumTokens();
+}
+
+async function fetchPremiumTokens() {
+  const res = await fetch('https://alanford1109980.github.io/memenfo/premium.json');
+  const data = await res.json();
+  const premiumGrid = document.getElementById("premium-grid");
+  premiumGrid.innerHTML = '';
+  data.forEach(t => {
+    const el = document.createElement("div");
+    el.className = "token-card";
+    el.innerHTML = `
+      <h3>${t.name}</h3>
+      <p>Price: $${parseFloat(t.price).toFixed(6)}</p>
+      <p>Volume: $${(t.volume / 1000).toFixed(1)}k</p>
+      <p>Market Cap: $${(t.mc / 1000).toFixed(1)}k</p>
+      <p>THX: ${t.txns} ${t.isUp ? '📈' : '📉'}</p>
+      <a href="${t.dexscreener}" target="_blank">View on DexScreener</a>
+      <a href="${t.rugcheck}" target="_blank">View on Rugcheck</a>
+    `;
+    premiumGrid.appendChild(el);
+  });
+}
+
+async function fetchTokens() {
+  const res = await fetch('https://api.dexscreener.com/latest/dex/pairs/solana');
+  const data = await res.json();
+  const trending = data.pairs
+    .filter(t => t.txns?.h1 > 20 && t.liquidity?.usd > 1000)
+    .slice(0, 50);
+
+  const clean = [];
+
+  for (let token of trending) {
+    const addr = token.pairAddress;
+    const check = await fetch(`https://api.rugcheck.xyz/v1/solana/${addr}`);
+    const info = await check.json();
+
+    if (info.status === 'Success' && info.data?.verdict !== 'Rugpull' && info.data?.verdict !== 'Scam') {
+      if (info.data?.verdict === 'Low LP Liquidity' || info.data?.verdict === 'Pass') {
+        clean.push({
+          name: token.baseToken.symbol,
+          price: token.priceUsd,
+          volume: token.volume.h1,
+          mc: token.fdv,
+          txns: token.txns.h1,
+          isUp: token.priceChange.h1 > 0,
+          dexscreener: `https://dexscreener.com/solana/${addr}`,
+          rugcheck: `https://rugcheck.xyz/tokens/${addr}`
+        });
+      }
+    }
+    if (clean.length >= 20) break;
+  }
+
+  document.getElementById("loader").style.display = "none";
+  const grid = document.getElementById("token-grid");
+  clean.forEach(t => {
+    const el = document.createElement("div");
+    el.className = "token-card";
+    el.innerHTML = `
+      <h3>${t.name}</h3>
+      <p>Price: $${parseFloat(t.price).toFixed(6)}</p>
+      <p>Volume: $${(t.volume / 1000).toFixed(1)}k</p>
+      <p>Market Cap: $${(t.mc / 1000).toFixed(1)}k</p>
+      <p>THX: ${t.txns} ${t.isUp ? '📈' : '📉'}</p>
+      <a href="${t.dexscreener}" target="_blank">View on DexScreener</a>
+      <a href="${t.rugcheck}" target="_blank">View on Rugcheck</a>
+    `;
+    grid.appendChild(el);
+  });
+}
+fetchTokens();
+</script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <style>
     html, body {
