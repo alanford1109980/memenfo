@@ -4,118 +4,196 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Memenfo – Premium Memecoin Picks</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: #000;
+      color: white;
+      scroll-behavior: smooth;
+    }
+    header.hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: radial-gradient(ellipse at top, #111 0%, #000 100%);
+      color: gold;
+      position: relative;
+      overflow: hidden;
+    }
+    header.hero::before {
+      content: '';
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,215,0,0.05) 0%, transparent 70%);
+      top: -50%;
+      left: -50%;
+      animation: rotateGlow 20s linear infinite;
+      z-index: 0;
+    }
+    @keyframes rotateGlow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    header.hero h1 {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      z-index: 1;
+    }
+    header.hero p {
+      font-size: 1.3rem;
+      max-width: 600px;
+      margin: 0 auto;
+      color: #ccc;
+      z-index: 1;
+    }
+    .section {
+      padding: 6vh 10vw;
+      border-bottom: 1px solid #222;
+    }
+    .token-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .token-card {
+      background: #111;
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid #333;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .token-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+    }
+    .token-card h3 {
+      color: gold;
+    }
+    .token-card a {
+      display: inline-block;
+      color: cyan;
+      margin-right: 1rem;
+      text-decoration: none;
+    }
+    .cta-button {
+      background: gold;
+      color: black;
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin: 2rem auto;
+      display: block;
+    }
+    .sol-payment, .telegram-section {
+      text-align: center;
+      padding: 3rem 2rem;
+      background-color: #111;
+    }
+    .sol-payment code {
+      display: inline-block;
+      padding: 1rem;
+      background: #000;
+      color: gold;
+      border-radius: 8px;
+      margin: 1rem 0;
+    }
+      .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 1rem 5vw;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 999;
+    }
+    .nav a {
+      color: gold;
+      margin-left: 2rem;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: color 0.3s ease;
+    }
+    .nav a:hover {
+      color: white;
+    }
 </head>
 <body>
-  <!-- Solana payment instructions -->
-  <div class="sol-payment">
-    <h2>💳 Unlock Premium Access</h2>
-    <p>Send <strong>0.25 SOL</strong> to the address below to unlock exclusive token picks:</p>
-    <code>5vLQ7Cf67S5Wou1RyzFirKtAkbfb48k1ekxkx6S2szY1</code>
-    <p>After payment, please send transaction ID to our Telegram or email for confirmation.</p>
+<nav class="nav">
+  <div style="font-weight: bold; color: gold; font-size: 1.2rem;">Memenfo</div>
+  <div>
+    <a href="#token-grid">Trending</a>
+    <a href="#premium-grid">Premium</a>
+    <a href="#">Telegram</a>
   </div>
+</nav>
+<header class="hero">
+  <h1>Memenfo</h1>
+  <p>The most accurate and early Solana token radar. Verified gems, updated in real-time, only here.</p>
+</header>
 
-  <!-- Telegram CTA -->
-  <div class="telegram-section">
-    <h2>📢 Join Our Telegram for Daily Alerts</h2>
-    <a href="#">Join Now</a>
-  </div>
+<section class="sol-payment">
+  <h2>💳 Unlock Premium Access</h2>
+  <p>Send <strong>0.25 SOL</strong> to the address below to unlock exclusive token picks:</p>
+  <code>5vLQ7Cf67S5Wou1RyzFirKtAkbfb48k1ekxkx6S2szY1</code>
+  <p>After payment, send the TX ID to our Telegram or email.</p>
+</section>
 
-  <div class="section">
-    <h2>🚀 Trending Solana Tokens (Top 20)</h2>
-    <div id="loader" style="text-align:center;font-size:1.2rem;color:#aaa;">Loading tokens...</div>
-    <div class="token-grid" id="token-grid"></div>
-  </div>
+<section class="telegram-section">
+  <h2>📢 Join Our Telegram for Daily Alerts</h2>
+  <a href="#" class="cta-button">Join Now</a>
+</section>
 
-  <!-- Premium Tokens Section -->
-  <div class="section" id="premium-section">
-    <h2>🔒 Premium Token Picks (Hidden)</h2>
-    <p style="text-align:center;color:#aaa;">These tokens are visible only after unlocking premium access.</p>
-    <button onclick="showPremium()" style="display:block;margin:2rem auto;padding:1rem 2rem;font-size:1rem;background:gold;color:black;border:none;border-radius:8px;cursor:pointer;">I Have Paid – Unlock Premium</button>
-    <div class="token-grid" id="premium-grid" style="display:none;"></div>
-  </div>
+<section class="section">
+  <h2>🚀 Trending Solana Tokens (Top 20)</h2>
+  <div id="loader" style="text-align:center;font-size:1.2rem;color:#aaa;">Loading tokens...</div>
+  <div class="token-grid" id="token-grid"></div>
+</section>
 
-  <script>
-    function showPremium() {
-      const premiumGrid = document.getElementById("premium-grid");
-      premiumGrid.innerHTML = '<p style="color:#aaa;">Loading premium tokens...</p>';
-      premiumGrid.style.display = "grid";
-      fetchPremiumTokens();
-    }
+<section class="section">
+  <h2>🔒 Premium Token Picks (Hidden)</h2>
+  <p style="text-align:center;color:#aaa;">These tokens are visible only after unlocking premium access.</p>
+  <button onclick="showPremium()" class="cta-button">I Have Paid – Unlock Premium</button>
+  <div class="token-grid" id="premium-grid" style="display:none;"></div>
+</section>
 
-    async function fetchPremiumTokens() {
-      const res = await fetch('https://alanford1109980.github.io/memenfo/premium.json');
-      const data = await res.json();
-      const premiumGrid = document.getElementById("premium-grid");
-      premiumGrid.innerHTML = '';
-      data.forEach(t => {
-        const el = document.createElement("div");
-        el.className = "token-card";
-        el.innerHTML = `
-          <h3>${t.name}</h3>
-          <p>Price: $${parseFloat(t.price).toFixed(6)}</p>
-          <p>Volume: $${(t.volume / 1000).toFixed(1)}k</p>
-          <p>Market Cap: $${(t.mc / 1000).toFixed(1)}k</p>
-          <p>THX: ${t.txns} ${t.isUp ? '📈' : '📉'}</p>
-          <a href="${t.dexscreener}" target="_blank">View on DexScreener</a>
-          <a href="${t.rugcheck}" target="_blank">View on Rugcheck</a>
-        `;
-        el.style.opacity = 1;
-        premiumGrid.appendChild(el);
-      });
-    }
+<script>
+// Scroll-triggered animation for sections
+window.addEventListener('load', () => {
+  gsap.from(".hero h1", { y: -50, opacity: 0, duration: 1 });
+  gsap.from(".hero p", { y: 50, opacity: 0, delay: 0.5, duration: 1 });
 
-    async function fetchTokens() {
-      const res = await fetch('https://api.dexscreener.com/latest/dex/pairs/solana');
-      const data = await res.json();
-      const trending = data.pairs
-        .filter(t => t.txns?.h1 > 20 && t.liquidity?.usd > 1000)
-        .slice(0, 50);
+  gsap.utils.toArray(".section").forEach(section => {
+    gsap.from(section, {
+      scrollTrigger: section,
+      opacity: 0,
+      y: 50,
+      duration: 1,
+      ease: "power2.out"
+    });
+  });
+});
 
-      const clean = [];
-
-      for (let token of trending) {
-        const addr = token.pairAddress;
-        const check = await fetch(`https://api.rugcheck.xyz/v1/solana/${addr}`);
-        const info = await check.json();
-
-        if (info.status === 'Success' && info.data?.verdict !== 'Rugpull' && info.data?.verdict !== 'Scam') {
-          if (info.data?.verdict === 'Low LP Liquidity' || info.data?.verdict === 'Pass') {
-            clean.push({
-              name: token.baseToken.symbol,
-              price: token.priceUsd,
-              volume: token.volume.h1,
-              mc: token.fdv,
-              txns: token.txns.h1,
-              isUp: token.priceChange.h1 > 0,
-              dexscreener: `https://dexscreener.com/solana/${addr}`,
-              rugcheck: `https://rugcheck.xyz/tokens/${addr}`
-            });
-          }
-        }
-
-        if (clean.length >= 20) break;
-      }
-
-      document.getElementById("loader").style.display = "none";
-      const grid = document.getElementById("token-grid");
-      clean.forEach(t => {
-        const el = document.createElement("div");
-        el.className = "token-card";
-        el.innerHTML = `
-          <h3>${t.name}</h3>
-          <p>Price: $${parseFloat(t.price).toFixed(6)}</p>
-          <p>Volume: $${(t.volume / 1000).toFixed(1)}k</p>
-          <p>Market Cap: $${(t.mc / 1000).toFixed(1)}k</p>
-          <p>THX: ${t.txns} ${t.isUp ? '📈' : '📉'}</p>
-          <a href="${t.dexscreener}" target="_blank">View on DexScreener</a>
-          <a href="${t.rugcheck}" target="_blank">View on Rugcheck</a>
-        `;
-        el.style.opacity = 1;
-        grid.appendChild(el);
-      });
-    }
-
-    fetchTokens();
-  </script>
+// GSAP animation
+window.addEventListener('load', () => {
+  gsap.from(".hero h1", { y: -50, opacity: 0, duration: 1 });
+  gsap.from(".hero p", { y: 50, opacity: 0, delay: 0.5, duration: 1 });
+});
+</script>
 </body>
 </html>
