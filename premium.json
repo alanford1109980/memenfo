@@ -1,0 +1,22 @@
+[
+  {
+    "name": "WIF2",
+    "price": 0.00243,
+    "volume": 185000,
+    "mc": 965000,
+    "txns": 104,
+    "isUp": true,
+    "dexscreener": "https://dexscreener.com/solana/abc123exampletoken1",
+    "rugcheck": "https://rugcheck.xyz/tokens/abc123exampletoken1"
+  },
+  {
+    "name": "SOLFROG",
+    "price": 0.00071,
+    "volume": 222000,
+    "mc": 780000,
+    "txns": 137,
+    "isUp": false,
+    "dexscreener": "https://dexscreener.com/solana/abc123exampletoken2",
+    "rugcheck": "https://rugcheck.xyz/tokens/abc123exampletoken2"
+  }
+]
