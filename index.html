@@ -1,28 +1,121 @@
-<!-- Memenfo.com - extended with CTA and full affiliate banner list -->
-<!-- ... (unchanged head and style) ... -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memenfo – Premium Memecoin Picks</title>
+</head>
+<body>
+  <!-- Solana payment instructions -->
+  <div class="sol-payment">
+    <h2>💳 Unlock Premium Access</h2>
+    <p>Send <strong>0.25 SOL</strong> to the address below to unlock exclusive token picks:</p>
+    <code>5vLQ7Cf67S5Wou1RyzFirKtAkbfb48k1ekxkx6S2szY1</code>
+    <p>After payment, please send transaction ID to our Telegram or email for confirmation.</p>
+  </div>
 
-  <div class="section">
-    <h2 style="text-align:center; color: gold;">🚀 Unlock Premium Access</h2>
-    <div style="text-align:center; margin-top: 2rem;">
-      <button onclick="document.getElementById('wallet').scrollIntoView({behavior:'smooth'});" style="padding: 1rem 2rem; font-size: 1.2rem; background: gold; color: black; border: none; border-radius: 12px; cursor: pointer;">Unlock Now</button>
-    </div>
+  <!-- Telegram CTA -->
+  <div class="telegram-section">
+    <h2>📢 Join Our Telegram for Daily Alerts</h2>
+    <a href="#">Join Now</a>
   </div>
 
   <div class="section">
-    <h2>Recommended Tools & Bots</h2>
-    <div class="banner-section">
-      <div class="banner">🚀 Axiom Sniper Bot</div>
-      <div class="banner">⚡ Photon – One of the Fastest & Most Stable Bots on Solana</div>
-      <div class="banner">🔥 Blazing Trading Suite – Beginner-Friendly, Fast, and Safe</div>
-      <div class="banner">🐂 BullX – Advanced and Fast Multi-Chain Meme Coin Trading</div>
-      <div class="banner">🎯 Trojan – One of the Simplest Telegram Trading Bots on Solana</div>
-      <div class="banner">🍌 Banana Gun – One of the Fastest Sniping Bots</div>
-      <div class="banner">🎵 Maestro – The Widest Multi-Chain Support and Premium Experience</div>
-      <div class="banner">🌱 Nova – An Advanced Telegram Bot in the Early Stages</div>
-      <div class="banner">🌸 Bloom Bot – Smooth & Quick Trading on Solana</div>
-      <div class="banner">🧠 Sigma – The First Stable Trading on Base</div>
-      <div class="banner">⚡ MevX – Quick Trading and Sniping With the Lowest Fees</div>
-    </div>
+    <h2>🚀 Trending Solana Tokens (Top 20)</h2>
+    <div id="loader" style="text-align:center;font-size:1.2rem;color:#aaa;">Loading tokens...</div>
+    <div class="token-grid" id="token-grid"></div>
   </div>
 
-<!-- ... (unchanged scripts below) ... -->
+  <!-- Premium Tokens Section -->
+  <div class="section" id="premium-section">
+    <h2>🔒 Premium Token Picks (Hidden)</h2>
+    <p style="text-align:center;color:#aaa;">These tokens are visible only after unlocking premium access.</p>
+    <button onclick="showPremium()" style="display:block;margin:2rem auto;padding:1rem 2rem;font-size:1rem;background:gold;color:black;border:none;border-radius:8px;cursor:pointer;">I Have Paid – Unlock Premium</button>
+    <div class="token-grid" id="premium-grid" style="display:none;"></div>
+  </div>
+
+  <script>
+    function showPremium() {
+      const premiumGrid = document.getElementById("premium-grid");
+      premiumGrid.innerHTML = '<p style="color:#aaa;">Loading premium tokens...</p>';
+      premiumGrid.style.display = "grid";
+      fetchPremiumTokens();
+    }
+
+    async function fetchPremiumTokens() {
+      const res = await fetch('https://alanford1109980.github.io/memenfo/premium.json');
+      const data = await res.json();
+      const premiumGrid = document.getElementById("premium-grid");
+      premiumGrid.innerHTML = '';
+      data.forEach(t => {
+        const el = document.createElement("div");
+        el.className = "token-card";
+        el.innerHTML = `
+          <h3>${t.name}</h3>
+          <p>Price: $${parseFloat(t.price).toFixed(6)}</p>
+          <p>Volume: $${(t.volume / 1000).toFixed(1)}k</p>
+          <p>Market Cap: $${(t.mc / 1000).toFixed(1)}k</p>
+          <p>THX: ${t.txns} ${t.isUp ? '📈' : '📉'}</p>
+          <a href="${t.dexscreener}" target="_blank">View on DexScreener</a>
+          <a href="${t.rugcheck}" target="_blank">View on Rugcheck</a>
+        `;
+        el.style.opacity = 1;
+        premiumGrid.appendChild(el);
+      });
+    }
+
+    async function fetchTokens() {
+      const res = await fetch('https://api.dexscreener.com/latest/dex/pairs/solana');
+      const data = await res.json();
+      const trending = data.pairs
+        .filter(t => t.txns?.h1 > 20 && t.liquidity?.usd > 1000)
+        .slice(0, 50);
+
+      const clean = [];
+
+      for (let token of trending) {
+        const addr = token.pairAddress;
+        const check = await fetch(`https://api.rugcheck.xyz/v1/solana/${addr}`);
+        const info = await check.json();
+
+        if (info.status === 'Success' && info.data?.verdict !== 'Rugpull' && info.data?.verdict !== 'Scam') {
+          if (info.data?.verdict === 'Low LP Liquidity' || info.data?.verdict === 'Pass') {
+            clean.push({
+              name: token.baseToken.symbol,
+              price: token.priceUsd,
+              volume: token.volume.h1,
+              mc: token.fdv,
+              txns: token.txns.h1,
+              isUp: token.priceChange.h1 > 0,
+              dexscreener: `https://dexscreener.com/solana/${addr}`,
+              rugcheck: `https://rugcheck.xyz/tokens/${addr}`
+            });
+          }
+        }
+
+        if (clean.length >= 20) break;
+      }
+
+      document.getElementById("loader").style.display = "none";
+      const grid = document.getElementById("token-grid");
+      clean.forEach(t => {
+        const el = document.createElement("div");
+        el.className = "token-card";
+        el.innerHTML = `
+          <h3>${t.name}</h3>
+          <p>Price: $${parseFloat(t.price).toFixed(6)}</p>
+          <p>Volume: $${(t.volume / 1000).toFixed(1)}k</p>
+          <p>Market Cap: $${(t.mc / 1000).toFixed(1)}k</p>
+          <p>THX: ${t.txns} ${t.isUp ? '📈' : '📉'}</p>
+          <a href="${t.dexscreener}" target="_blank">View on DexScreener</a>
+          <a href="${t.rugcheck}" target="_blank">View on Rugcheck</a>
+        `;
+        el.style.opacity = 1;
+        grid.appendChild(el);
+      });
+    }
+
+    fetchTokens();
+  </script>
+</body>
+</html>
